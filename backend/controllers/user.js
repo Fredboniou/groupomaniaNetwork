@@ -3,31 +3,6 @@ const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const con = require('../MySql');
 
-/*exports.signup = (req, res, next) => {
-    //const user = req.body
-    // email = user.email
-    // let emailhash = sha1(email)
-    // user.email = emailhash
-     bcrypt.hash(req.body.password, 10) 
-    .then((hash) => {
-        const user = new User ({
-            username: req.body.username,
-            email: req.body.email,
-            password: hash,
-            bio: req.body.bio,
-            isAdmin: req.body.isAdmin,
-        })
-        //user.password = hash
-        con.query(`INSERT INTO user SET ?`, user, (err, result, field) => {
-            if (err) {
-                console.log(err)
-                return res.status(400).json("erreur")
-            }
-            return res.status(201).json({message : 'Votre compte a bien été crée !'},)
-        });
-    });
-}; */ 
-
 exports.signup = (req, res, next) => {
     console.log('hello2')
     //return res.status(200).json({ message: 'ca marche'})
@@ -38,7 +13,6 @@ exports.signup = (req, res, next) => {
                 bio: req.body.bio,
                 isAdmin: req.body.isAdmin
             };*/
-    //bcrypt.hash(req.body.password, 10)
     bcrypt.hash(user.password, 10)
         .then(hash => {
             user.password = hash
@@ -52,29 +26,6 @@ exports.signup = (req, res, next) => {
         .catch(err => res.status(500).json({ err }))
 };
 
-
-/*exports.signup = (req, res, next) => {
-    const user = req.body
-    bcrypt.hash(user.password, 10).then((hash) => {
-      user.password = hash
-      conn.query('INSERT INTO users SET ?', user, function (
-        error,
-        results,
-        fields
-      ) {
-        if (error) {
-          // Si erreur de la requête
-          console.log(error) // La console du serveur affiche l'erreur
-          return res.status(400).json(error.sqlMessage)
-        } // Et retourne uniquement le message de l'erreur au front
-        return res.status(201).json({
-          message:
-            'Votre compte a bien été créé ! Vous pouvez maintenant vous connecter.'
-        })
-      })
-    })
-    .catch(error => res.status(500).json({error}));
-  }*/
 
 exports.login = (req, res, next) => {
     const userMail = req.body.email;

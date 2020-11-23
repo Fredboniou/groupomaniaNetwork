@@ -11,7 +11,6 @@ exports.signup = (req, res, next) => {
                 email: req.body.email,
                 password: hash,
                 bio: req.body.bio,
-                isAdmin: req.body.isAdmin
             };*/
     bcrypt.hash(user.password, 10)
         .then(hash => {
@@ -28,30 +27,39 @@ exports.signup = (req, res, next) => {
 
 
 exports.login = (req, res, next) => {
-    const userMail = req.body.email;
-    const userPass = req.body.password;
-    if(userMail && userPass) {
-        con.query('SELECT * FROM database_development.users WHERE email = ?', userMail, function (err, result, fields) {
-            if(userMail != null && userPass != null) {
-                bcrypt.compare(req.body.password, user.password)
-                    .then(valid => {
-                        if(!valid){
-                         return res.status(401).json({err: "Identifiant ou mot de passe incorrect !"});
-                         } 
-                        res.status(200).json({
-                            userId: user._id,
-                            token: jwt.sign(
-                                {userId: user._id},
-                                'RANDOM_TOKEN_SECRET',
-                                {expiresIn: "24h"}
-                            )
-                        })
-                    })
-                    .catch(error => res.status(500).json({error}));
-            }
-        })
+    const userMail = req.body.email
+    const userPass = req.body.password
+    if (userMail && userPass) {
+      con.query(
+        'SELECT * FROM groupomania.users WHERE email=?',
+        userMail,
+        function (err, result, field) {
+          if (result.length > 0) {
+            bcrypt.compare(userPass, result[0].password).then((valid) => {
+              if (!valid) {
+                res.status(401).json({ message: 'Utilisateur ou mot de passe inconnu' })
+              } else {
+                res.status(200).json({
+                  userId: result[0].idUSERS,
+                  username: result[0].username,
+                  email: result[0].email,
+                  accessToken: jwt.sign(
+                    { userId: result[0].idUSERS },
+                    'RANDOM_TOKEN_SECRET',
+                    { expiresIn: '24h' }
+                  )
+                })
+              }
+            })
+          } else {
+            res.status(401).json({ message: 'Utilisateur ou mot de passe inconnu' })
+          }
+        }
+      )
+    } else {
+      res.status(500).json({ message: "Entrez un nom d'utilisateur et un mot de passe" })
     }
-};
+  }
 
 exports.deleteUser = (req, res, next) => {
     con.query(`DELETE FROM users WHERE id = ${req.params.id}`, req.params.id, function (err, result, fields) {

@@ -4,8 +4,6 @@ const mysql = require('mysql');
 const con = require('../MySql');
 
 exports.signup = (req, res, next) => {
-    console.log('hello2')
-    //return res.status(200).json({ message: 'ca marche'})
     const user = req.body//{
                 /*username: req.body.username,
                 email: req.body.email,
@@ -57,20 +55,16 @@ exports.login = (req, res, next) => {
         }
       )
     } else {
-      res.status(500).json({ message: "Entrez un nom d'utilisateur et un mot de passe" })
+      res.status(500).json({ message: 'Entrez un nom d\'utilisateur et un mot de passe' })
     }
   }
 
 exports.deleteUser = (req, res, next) => {
-    con.query(`DELETE FROM users WHERE id = ${req.params.id}`, req.params.id, function (err, result, fields) {
+    con.query(`DELETE FROM users WHERE id = ${req.params.id}`, req.params.id, function (err, result, field) {
         if (err) {
             return res.status(400).json({ error });
         }
-        return res.status(200).json({ message: 'Utilisateur supprimé' });
+        return res.status(200).json({ message: 'Utilisateur supprimé !' });
     })
 };
 
-exports.test = (req, res) => {
-    console.log('test3')
-    return res.status(200).send({ message: 'ok'})
-};
